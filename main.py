@@ -20,21 +20,21 @@ def setFont(doc):
 # 標楷體字型設定
     doc.styles['Normal'].font.name = u'標楷體'
     doc.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'標楷體')
-def add_logo(paragraph):
+def add_logo(paragraph, pic_path):
     # 加入圖片
     logo_run = paragraph.add_run()
-    logo_run.add_picture('kaofeng_ico.jpg',width=Cm(1.1))
+    logo_run.add_picture(pic_path, width=Cm(1.1), height=Cm(0.86))
 def add_title(paragraph):
-    run = paragraph.add_run()
-    run1 = paragraph.add_run()
+    run = paragraph.add_run("高鳳國際物流股份有限公司\n")
+    run1 = paragraph.add_run("2021年機房檢查記錄表\n")
     run.font.size = Pt(28)
-    run.text = "高鳳國際物流股份有限公司\n"
+    run.font.bold = True
     run1.font.size = Pt(20)
-    run1.text = "2021年機房檢查記錄表"
+    run1.font.bold = True
 def fill_in_data(table):
-    for i in range(len(need_to_record_date)):
-        table.cell(i, 0).text = need_to_record_date[i][0]
-        table.cell(i, 2).text = need_to_record_date[i][1]
+    for i in range(len(record_date_form)):
+        table.cell(i, 0).text = record_date_form[i][0]
+        table.cell(i, 2).text = record_date_form[i][1]
 def set_table_font_and_font_size(table, fontsize):
     text_size = fontsize
     for row in table.rows:
@@ -45,9 +45,10 @@ def set_table_font_and_font_size(table, fontsize):
                     font.size = Pt(text_size)
 # 設定要生成的年月份
 year = 2021
-month = 9
+month = 11
 
-need_to_record_date = getMothDate(year, month)
+record_date_form = getMothDate(year, month)
+
 doc = Document()
 # 設定字型
 setFont(doc)
@@ -55,7 +56,7 @@ paragraph = doc.add_paragraph()
 # 標題文字置中
 paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 # 加入高鳳Logo
-add_logo(paragraph)
+add_logo(paragraph, 'kaofeng_ico.jpg')
 # 加入標題文字
 add_title(paragraph)
 # 版面編排
@@ -66,13 +67,13 @@ col_text_dic = {0: "日期時間", 1: "溫度/濕度", 2: "備份位置", 3: "�
 # 加入表格
 headtable = doc.add_table(1,6, style='Table Grid')
 headtable.alignment = WD_TABLE_ALIGNMENT.CENTER
-table = doc.add_table(len(need_to_record_date),6, style='Table Grid')
+table = doc.add_table(len(record_date_form),6, style='Table Grid')
 table.alignment = WD_TABLE_ALIGNMENT.CENTER
 
 # 標題欄位高度1.27cm
 for row in headtable.rows: row.height=Cm(1.27)
 # 其他行高度0.74cm
-for row in table.rows: row.height=Cm(0.71)
+for row in table.rows: row.height=Cm(0.74)
 
 for col_num in range(6):
     # 根據col_width_dic 設定欄寬
